@@ -1,5 +1,3 @@
-import React from 'react';
-
 const Card = ({card, onCardClick}) => {
   const handleClick = () => {
     onCardClick(card);
@@ -7,7 +5,12 @@ const Card = ({card, onCardClick}) => {
 
   return (
     <li className="card">
-      <img className="card__image" src={card.link} alt="" onClick={handleClick} />
+      <img
+        className="card__image"
+        src={card.link}
+        alt={card.name}
+        onClick={handleClick}
+      />
       <div className="card__description">
         <h2 className="card__title">{card.name}</h2>
         <div className="card__like-block">

@@ -1,6 +1,4 @@
-import React from 'react';
-
-const PopupWithForm = ({children, name, title, isOpen, onClose}) => {
+const PopupWithForm = ({children, name, title, isOpen, onClose, buttonText}) => {
   return (
     <div className={`popup popup_role_${name} ${isOpen && 'popup_opened'}`}>
       <div className="popup__container">
@@ -8,7 +6,7 @@ const PopupWithForm = ({children, name, title, isOpen, onClose}) => {
           <h2 className="popup__title">{title}</h2>
           {children}
           <button className="button popup__button" type="submit">
-            Сохранить
+            {buttonText}
           </button>
         </form>
         <button

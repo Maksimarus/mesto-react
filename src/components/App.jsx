@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import {useState} from 'react';
 import Footer from './Footer';
 import Header from './Header';
 import Main from './Main';
@@ -48,7 +48,8 @@ const App = () => {
         name="edit-avatar"
         title="Обновить аватар"
         isOpen={isEditAvatarPopupOpen}
-        onClose={closeAllPopups}>
+        onClose={closeAllPopups}
+        buttonText="Сохранить">
         <input
           name="avatarInput"
           className="popup__input"
@@ -64,7 +65,8 @@ const App = () => {
         name="edit-profile"
         title="Редактировать профиль"
         isOpen={isEditProfilePopupOpen}
-        onClose={closeAllPopups}>
+        onClose={closeAllPopups}
+        buttonText="Сохранить">
         <input
           name="nameInput"
           className="popup__input"
@@ -93,7 +95,8 @@ const App = () => {
         name="add-card"
         title="Новое место"
         isOpen={isAddPlacePopupOpen}
-        onClose={closeAllPopups}>
+        onClose={closeAllPopups}
+        buttonText="Сохранить">
         <input
           name="placeTitleInput"
           className="popup__input"
