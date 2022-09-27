@@ -6,13 +6,16 @@ class Api {
   _responseHandler(res) {
     return res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);
   }
-  likeCard(cardId) {
+  changeLikeCardStatus(cardId, isLiked) {
+    return isLiked ? this._dislikeCard(cardId) : this._likeCard(cardId);
+  }
+  _likeCard(cardId) {
     return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: 'PUT',
       headers: this._headers,
     }).then(this._responseHandler);
   }
-  dislikeCard(cardId) {
+  _dislikeCard(cardId) {
     return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: 'DELETE',
       headers: this._headers,
@@ -53,21 +56,21 @@ class Api {
       }),
     }).then(this._responseHandler);
   }
-  _getUser() {
+  getUser() {
     return fetch(`${this._baseUrl}/users/me`, {
       method: 'GET',
       headers: this._headers,
     }).then(this._responseHandler);
   }
-  _getInitialCards() {
+  getInitialCards() {
     return fetch(`${this._baseUrl}/cards`, {
       method: 'GET',
       headers: this._headers,
     }).then(this._responseHandler);
   }
-  getInitialData() {
-    return Promise.all([this._getUser(), this._getInitialCards()]);
-  }
+  // getInitialData() {
+  //   return Promise.all([this._getUser(), this._getInitialCards()]);
+  // }
 }
 
 export default new Api({
