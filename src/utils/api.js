@@ -68,9 +68,6 @@ class Api {
       headers: this._headers,
     }).then(this._responseHandler);
   }
-  // getInitialData() {
-  //   return Promise.all([this._getUser(), this._getInitialCards()]);
-  // }
 }
 
 export default new Api({

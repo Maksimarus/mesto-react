@@ -8,28 +8,40 @@ import EditProfilePopup from './EditProfilePopup';
 import api from '../utils/api';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
+import PopupWithConfirm from './PopupWithConfirm';
 
 const App = () => {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
+  const [isDeleteCardPopupOpen, setIsDeleteCardPopupOpen] = useState(false);
 
   const [selectedCard, setSelectedCard] = useState(null);
+  const [currentCard, setCurrentCard] = useState(null);
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
 
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     const fetchCards = async () => {
-      const initialCards = await api.getInitialCards();
-      setCards(initialCards);
+      try {
+        const initialCards = await api.getInitialCards();
+        setCards(initialCards);
+      } catch (error) {
+        console.error(error);
+      }
     };
     fetchCards();
   }, []);
 
   useEffect(() => {
     const fetchUser = async () => {
-      const user = await api.getUser();
-      setCurrentUser(user);
+      try {
+        const user = await api.getUser();
+        setCurrentUser(user);
+      } catch (error) {
+        console.error(error);
+      }
     };
     fetchUser();
   }, []);
@@ -46,37 +58,74 @@ const App = () => {
   const handleAddPlaceClick = () => {
     setIsAddPlacePopupOpen(true);
   };
-
+  const handleDeleteCardClick = card => {
+    setCurrentCard(card);
+    setIsDeleteCardPopupOpen(true);
+  };
   const closeAllPopups = () => {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
+    setIsDeleteCardPopupOpen(false);
     setSelectedCard(null);
   };
 
   const handleUpdateUser = async ({name, about}) => {
-    const newUserData = await api.updateUserInfo({name, about});
-    setCurrentUser(newUserData);
-    closeAllPopups();
+    setIsLoading(true);
+    try {
+      const newUserData = await api.updateUserInfo({name, about});
+      setCurrentUser(newUserData);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+      closeAllPopups();
+    }
   };
   const handleUpdateAvatar = async avatar => {
-    const newUserData = await api.updateUserAvatar(avatar);
-    setCurrentUser(newUserData);
-    closeAllPopups();
+    setIsLoading(true);
+    try {
+      const newUserData = await api.updateUserAvatar(avatar);
+      setCurrentUser(newUserData);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+      closeAllPopups();
+    }
   };
   const handleCardLike = async card => {
     const isLiked = card.likes.some(user => user._id === currentUser._id);
-    const newCard = await api.changeLikeCardStatus(card._id, isLiked);
-    setCards(state => state.map(c => (c._id === card._id ? newCard : c)));
+    try {
+      const newCard = await api.changeLikeCardStatus(card._id, isLiked);
+      setCards(state => state.map(c => (c._id === card._id ? newCard : c)));
+    } catch (error) {
+      console.error(error);
+    }
   };
   const handleCardDelete = async card => {
-    await api.deleteCard(card._id);
-    setCards(state => state.filter(c => c._id !== card._id));
+    setIsLoading(true);
+    try {
+      await api.deleteCard(card._id);
+      setCards(state => state.filter(c => c._id !== card._id));
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+      closeAllPopups();
+    }
   };
   const handleAddPlaceSubmit = async ({name, link}) => {
-    const newCard = await api.postNewCard({name, link});
-    setCards([newCard, ...cards]);
-    closeAllPopups();
+    setIsLoading(true);
+    try {
+      const newCard = await api.postNewCard({name, link});
+      setCards([newCard, ...cards]);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+      closeAllPopups();
+    }
   };
 
   return (
@@ -88,9 +137,9 @@ const App = () => {
           onAddPlace={handleAddPlaceClick}
           onEditAvatar={handleEditAvatarClick}
           onCardClick={handleCardClick}
+          onCardDelete={handleDeleteCardClick}
           cards={cards}
           onCardLike={handleCardLike}
-          onCardDelete={handleCardDelete}
         />
         <Footer />
 
@@ -98,30 +147,28 @@ const App = () => {
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
+          isLoading={isLoading}
         />
         <EditProfilePopup
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
+          isLoading={isLoading}
         />
         <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
           onAddPlace={handleAddPlaceSubmit}
+          isLoading={isLoading}
         />
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
-
-        <div className="popup popup_role_delete-card">
-          <div className="popup__container">
-            <form className="popup__form">
-              <h2 className="popup__title popup__title_role_delete-card">Вы уверены?</h2>
-              <button type="submit" className="button popup__button">
-                Да
-              </button>
-            </form>
-            <button type="button" className="button popup__close-button"></button>
-          </div>
-        </div>
+        <PopupWithConfirm
+          isOpen={isDeleteCardPopupOpen}
+          onClose={closeAllPopups}
+          onDeleteCard={handleCardDelete}
+          card={currentCard}
+          isLoading={isLoading}
+        />
       </div>
     </CurrentUserContext.Provider>
   );

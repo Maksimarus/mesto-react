@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import PopupWithForm from './PopupWithForm';
 
-const AddPlacePopup = ({isOpen, onClose, onAddPlace}) => {
+const AddPlacePopup = ({isOpen, onClose, onAddPlace, isLoading}) => {
   const [name, setName] = useState('');
   const [link, setLink] = useState('');
   const onChangeName = e => {
@@ -22,7 +22,8 @@ const AddPlacePopup = ({isOpen, onClose, onAddPlace}) => {
       isOpen={isOpen}
       onClose={onClose}
       buttonText="Сохранить"
-      onSubmit={handleSubmit}>
+      onSubmit={handleSubmit}
+      isLoading={isLoading}>
       <input
         name="placeTitleInput"
         className="popup__input"
