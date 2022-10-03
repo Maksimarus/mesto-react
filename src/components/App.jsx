@@ -75,11 +75,11 @@ const App = () => {
     try {
       const newUserData = await api.updateUserInfo({name, about});
       setCurrentUser(newUserData);
+      closeAllPopups();
     } catch (error) {
       console.error(error);
     } finally {
       setIsLoading(false);
-      closeAllPopups();
     }
   };
   const handleUpdateAvatar = async avatar => {
@@ -87,11 +87,11 @@ const App = () => {
     try {
       const newUserData = await api.updateUserAvatar(avatar);
       setCurrentUser(newUserData);
+      closeAllPopups();
     } catch (error) {
       console.error(error);
     } finally {
       setIsLoading(false);
-      closeAllPopups();
     }
   };
   const handleCardLike = async card => {
@@ -108,11 +108,11 @@ const App = () => {
     try {
       await api.deleteCard(card._id);
       setCards(state => state.filter(c => c._id !== card._id));
+      closeAllPopups();
     } catch (error) {
       console.error(error);
     } finally {
       setIsLoading(false);
-      closeAllPopups();
     }
   };
   const handleAddPlaceSubmit = async ({name, link}) => {
@@ -120,11 +120,11 @@ const App = () => {
     try {
       const newCard = await api.postNewCard({name, link});
       setCards([newCard, ...cards]);
+      closeAllPopups();
     } catch (error) {
       console.error(error);
     } finally {
       setIsLoading(false);
-      closeAllPopups();
     }
   };
 

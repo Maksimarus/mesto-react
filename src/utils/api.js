@@ -6,67 +6,70 @@ class Api {
   _responseHandler(res) {
     return res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);
   }
+  _request(url, options) {
+    return fetch(url, options).then(this._responseHandler);
+  }
   changeLikeCardStatus(cardId, isLiked) {
     return isLiked ? this._dislikeCard(cardId) : this._likeCard(cardId);
   }
   _likeCard(cardId) {
-    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
+    return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: 'PUT',
       headers: this._headers,
-    }).then(this._responseHandler);
+    });
   }
   _dislikeCard(cardId) {
-    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
+    return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: 'DELETE',
       headers: this._headers,
-    }).then(this._responseHandler);
+    });
   }
   deleteCard(cardId) {
-    return fetch(`${this._baseUrl}/cards/${cardId}`, {
+    return this._request(`${this._baseUrl}/cards/${cardId}`, {
       method: 'DELETE',
       headers: this._headers,
-    }).then(this._responseHandler);
+    });
   }
   postNewCard({name, link}) {
-    return fetch(`${this._baseUrl}/cards`, {
+    return this._request(`${this._baseUrl}/cards`, {
       method: 'POST',
       headers: this._headers,
       body: JSON.stringify({
         name,
         link,
       }),
-    }).then(this._responseHandler);
+    });
   }
   updateUserAvatar(avatar) {
-    return fetch(`${this._baseUrl}/users/me/avatar`, {
+    return this._request(`${this._baseUrl}/users/me/avatar`, {
       method: 'PATCH',
       headers: this._headers,
       body: JSON.stringify({
         avatar,
       }),
-    }).then(this._responseHandler);
+    });
   }
   updateUserInfo({name, about}) {
-    return fetch(`${this._baseUrl}/users/me`, {
+    return this._request(`${this._baseUrl}/users/me`, {
       method: 'PATCH',
       headers: this._headers,
       body: JSON.stringify({
         name,
         about,
       }),
-    }).then(this._responseHandler);
+    });
   }
   getUser() {
-    return fetch(`${this._baseUrl}/users/me`, {
+    return this._request(`${this._baseUrl}/users/me`, {
       method: 'GET',
       headers: this._headers,
-    }).then(this._responseHandler);
+    });
   }
   getInitialCards() {
-    return fetch(`${this._baseUrl}/cards`, {
+    return this._request(`${this._baseUrl}/cards`, {
       method: 'GET',
       headers: this._headers,
-    }).then(this._responseHandler);
+    });
   }
 }
 

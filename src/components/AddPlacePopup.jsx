@@ -1,18 +1,11 @@
-import {useState} from 'react';
+import {useForm} from '../hooks/useForm';
 import PopupWithForm from './PopupWithForm';
 
 const AddPlacePopup = ({isOpen, onClose, onAddPlace, isLoading}) => {
-  const [name, setName] = useState('');
-  const [link, setLink] = useState('');
-  const onChangeName = e => {
-    setName(e.target.value);
-  };
-  const onChangeLink = e => {
-    setLink(e.target.value);
-  };
+  const {values, handleChange} = useForm({name: '', link: ''});
   const handleSubmit = e => {
     e.preventDefault();
-    onAddPlace({name, link});
+    onAddPlace(values);
   };
 
   return (
@@ -25,7 +18,7 @@ const AddPlacePopup = ({isOpen, onClose, onAddPlace, isLoading}) => {
       onSubmit={handleSubmit}
       isLoading={isLoading}>
       <input
-        name="placeTitleInput"
+        name="name"
         className="popup__input"
         type="text"
         id="placeTitle-input"
@@ -33,19 +26,19 @@ const AddPlacePopup = ({isOpen, onClose, onAddPlace, isLoading}) => {
         required
         minLength="2"
         maxLength="30"
-        value={name}
-        onChange={onChangeName}
+        value={values.name}
+        onChange={handleChange}
       />
       <span className="popup__input-error placeTitle-input-error"></span>
       <input
-        name="placeUrlInput"
+        name="link"
         className="popup__input"
         type="url"
         id="placeUrl-input"
         placeholder="Ссылка на картинку"
         required
-        value={link}
-        onChange={onChangeLink}
+        value={values.link}
+        onChange={handleChange}
       />
       <span className="popup__input-error placeUrl-input-error"></span>
     </PopupWithForm>
