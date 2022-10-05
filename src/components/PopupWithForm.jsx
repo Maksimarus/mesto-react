@@ -11,12 +11,10 @@ const PopupWithForm = ({
   return (
     <div className={`popup popup_role_${name} ${isOpen && 'popup_opened'}`}>
       <div className="popup__container">
-        <form name="form-profile" className="popup__form" onSubmit={onSubmit}>
+        <form name={`form-${name}`} className="popup__form" onSubmit={onSubmit}>
           <h2 className="popup__title">{title}</h2>
           {children}
-          <button
-            className={`button popup__button ${isLoading && 'popup__button_disabled'}`}
-            type="submit">
+          <button className="button popup__button" type="submit" disabled={isLoading}>
             {isLoading ? 'Сохранение...' : buttonText}
           </button>
         </form>
